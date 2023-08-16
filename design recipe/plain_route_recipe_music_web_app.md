@@ -1,4 +1,4 @@
-# {{ music_web_app }} Route Design Recipe
+# {{ /albums }} Route Design Recipe
 
 _Copy this design recipe template to test-drive a plain-text Flask route._
 

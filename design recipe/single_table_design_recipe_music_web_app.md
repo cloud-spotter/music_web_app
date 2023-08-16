@@ -1,4 +1,4 @@
-# Music Web Table Single Table Design Recipe Template
+# Albums Single Table Design Recipe Template
 
 _Copy this recipe template to design and create a database table from a specification._
 
