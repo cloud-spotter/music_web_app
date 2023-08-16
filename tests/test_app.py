@@ -1,70 +1,80 @@
 # Tests for your routes go here
+import os
+from lib.database_connection import get_flask_database_connection
+from flask import Flask, request
 
 
+#####-----  Scenario 1  -----#####
 
+#POST (create albums table row entry):
+# POST /album
+#  Parameters:
+#    title: 'Voyage'
+#    release_year: 2022
+#    artist_id: 2
 
-
-
-
-
-
-
-
-
-
-# === Example Code Below ===
-
-#Examples from hello_web_project test_app.py file:
-
-# === 03 Test-driving a route: Exercise Two ===
-
-'''
-SORT ROUTE
-POST /sort-names
-    Parameters:
-    names: Joe,Alice,Zoe,Julia,Kieran
-Expected response (200 OK)
-'''
-def test_sort_names_gets_200_OK_status(web_client):
-    response = web_client.post('/sort-names', data={'text': "Joe,Alice,Zoe,Julia,Kieran"})
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == "Alice,Joe,Julia,Kieran,Zoe"
-
-'''
-POST /submit
-    Parameters: none
-    Expected response (400 Bad Request)
-'''
-def test_sort_names_returns_400_with_no_parameters(web_client):
-    response = web_client.post('/sort-names', data={'text': ''})
-    assert response.status_code == 400
-    assert response.data.decode('utf-8') == "Please provide a list of strings (comma-separated)"
-# HAD TO ASK PEERS FOR HELP ON THIS ONE!
-
-# === 03 Test-driving a route: Challenge ===
-
-'''
-# GET /names
-#   Expected response (200 OK)
-'''
+# Expected response (200 OK):
 """
-Julia, Alice, Karim, Eddie
+"""   
+# (No content returned)
+
+#GET (request list of albums from table):
+
+# GET /album
+# Expected response (200 OK)
 """
-def test_add_name(web_client):
-    #Simulate sending a GET request to /wave
-    response = web_client.get('/name')
-    #Assert that the status code was 200 (OK)
-    assert response.status_code == 200 #passed! At last!
-    assert response.data.decode('utf-8') == "Julia,Alice,Karim"
+Album(3, Voyage, 2022, 2)
+"""
 
-# GET /names?add=Eddie
-# Expected response is the string returned with Eddie added
-# Expected status_code == 200 (OK)
+'''
+When: I call POST /albums with album info
+That album is now in the list in GET /albums
+'''
+def test_post_album_table_populates_with_album(db_connection, web_client):
+    db_connection.seed("seeds/album_store.sql")
+    post_response = web_client.post("/albums", data={
+        'title': 'Voyage',
+        'release_year': '2022', #Remember: everything sent via a Request is a string
+        'artist_id': '2'
+    })
+    assert post_response.status_code == 200 
+    assert post_response.data.decode('utf-8') == ""
 
-def test_add_name_to_names(web_client):
-    response = web_client.get('/name?add=Eddie')
+    get_response = web_client.get("/albums")
+    assert get_response.status_code == 200
+    assert get_response.data.decode('utf-8') == "" \
+        "Album(1, Father of the Bride, 2019, 1)\n" \
+        "Album(2, London Calling, 1979, 3)\n" \
+        "Album(3, Voyage, 2022, 2)"
+    
+'''
+When I call GET /albums
+I get a list of albums back
+'''
+def test_get_albums(db_connection, web_client):
+    db_connection.seed("seeds/album_store.sql")
+    response = web_client.get('/albums')
     assert response.status_code == 200
-    assert response.data.decode('utf-8') == "Julia,Alice,Karim,Eddie"
+    assert response.data.decode('utf-8') == "" \
+        "Album(1, Father of the Bride, 2019, 1)\n" \
+        "Album(2, London Calling, 1979, 3)"
 
 
-# === End Example Code ===
+#####-----  Scenario 2  -----#####
+
+    #POST (request sent without parameters):
+    # POST /album
+
+    # Expected response (400 Bad Request):
+    """
+    You need to submit a title, release_year and artist_id
+    """  
+
+    # GET /album
+    # Expected response (200 OK)
+    """
+    Album(Father of the Bride, 2019, 1)
+    Album(London Calling, 1979, 3)
+    """
+
+# ^ Not implemented
