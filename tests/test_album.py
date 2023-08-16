@@ -22,7 +22,7 @@ def test_compare():
     
 '''
 Albums represent as strings
-'''    
+'''
 def test_stringify_album_object():
     album = Album(1, 'Father of the Bride', 2019, 1)
     assert str(album) == "Album(1, Father of the Bride, 2019, 1)"

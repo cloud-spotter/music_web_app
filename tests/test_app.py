@@ -58,7 +58,8 @@ def test_get_albums(db_connection, web_client):
     assert response.data.decode('utf-8') == "" \
         "Album(1, Father of the Bride, 2019, 1)\n" \
         "Album(2, London Calling, 1979, 3)"
-
+    # As a single line string:
+    # assert response.data.decode('utf-8') == "Album(1, Father of the Bride, 2019, 1)\nAlbum(2, London Calling, 1979, 3)"
 
 #####-----  Scenario 2  -----#####
 
