@@ -2,12 +2,14 @@ import os
 from lib.database_connection import get_flask_database_connection
 from lib.album_repository import AlbumRepository
 from lib.album import *
+from lib.artist_repository import *
+from lib.artist import *
 from flask import Flask, request, Response
 
 # Create a new Flask app
 app = Flask(__name__)
 
-# == Your Routes Here ==
+# == /albums routes ==
 @app.route('/albums', methods=['POST'])
 def post_albums():
     connection = get_flask_database_connection(app)
@@ -28,8 +30,45 @@ def get_albums():
     return "\n".join(f"{album}" for album in repository.all())
 
 
+# == /artists routes ==
+@app.route('/artists', methods=['GET']) #@app is a decorator inside the Flask library
+def get_artists():
+    connection = get_flask_database_connection(app)
+    repository = ArtistRepository(connection)
+    artists = repository.all()
+    artist_names = []
+    for artist in artists:
+        artist_names.append(artist.name)
+    return ", ".join(artist_names)
+    #return 200, "\n".join(f"{artist}" for artist in repository.all())
 
+# Try displaying each side of the assertion statement in the error messages
+# to compare (printing won't help always when you're dealing with strings/lists)
 
+# '["Pixies","ABBA","Taylor Swift","Nina Simone"]\n'    
+# ['Pixies', 'ABBA', 'Taylor Swift', 'Nina Simone']
+
+@app.route('/artists', methods=['POST'])
+def post_artists():
+    connection = get_flask_database_connection(app)
+    repository = ArtistRepository(connection)
+    artist = Artist(
+        None, 
+        request.form['name'], 
+        request.form['genre']
+    )
+    repository.create(artist)
+    return "", 200
+
+@app.route('/artists', methods=['GET']) #@app is a decorator inside the Flask library
+def get_artists_after_update():
+    connection = get_flask_database_connection(app)
+    repository = ArtistRepository(connection)
+    artists = repository.all()
+    artist_names = []
+    for artist in artists:
+        artist_names.append(artist.name)
+    return ", ".join(artist_names)
 
 
 

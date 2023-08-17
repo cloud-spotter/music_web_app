@@ -79,3 +79,73 @@ def test_get_albums(db_connection, web_client):
     """
 
 # ^ Not implemented
+
+
+
+
+#####-----  Scenario 1  /artists -----#####
+
+# GET /artists
+# Expected response (200 OK):
+"""
+Pixies, ABBA, Taylor Swift, Nina Simone
+""" 
+'''
+When I call GET /artists
+I get a list of artists back 
+'''
+def test_get_artists(db_connection, web_client):
+    db_connection.seed("seeds/artists.sql")
+    response = web_client.get('/artists')
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone'
+
+#####-----  Scenario 2  -----#####
+
+# POST /artist
+#  Parameters:
+#    name: "Wild_nothing"
+#    genre: "Indie"
+
+# Expected response (200 OK):
+"""
+"""   
+# (No content returned)
+
+
+#GET (to confirm artist added):
+
+# GET /artist
+# Expected response (200 OK)
+"""
+Pixies, ABBA, Taylor Swift, Nina Simone, Wild nothing
+"""
+
+#Tests:
+'''
+When: I call POST /artists with artist info
+That artist is now in the list in GET /artists
+'''
+def test_post_artists(db_connection, web_client):
+    db_connection.seed("seeds/artists.sql")
+    post_response = web_client.post("/artists", data={
+        'name': 'Wild_nothing',
+        'genre': 'Indie'
+    })
+    assert post_response.status_code == 200
+    assert post_response.data.decode('utf-8') == ""
+
+    get_response = web_client.get("/artists")
+    assert get_response.status_code == 200
+    assert get_response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone, Wild_nothing'
+
+'''
+When I call GET /artists
+I get a list of artists back
+With the added artist in the list
+'''
+def test_get_artists_after_update(db_connection, web_client):
+    db_connection.seed("seeds/artists.sql")
+    response = web_client.get('/artists')
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone, Wild_nothing'
