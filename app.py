@@ -7,7 +7,7 @@ from flask import Flask, request, Response
 # Create a new Flask app
 app = Flask(__name__)
 
-# == Your Routes Here ==
+# == /albums routes ==
 @app.route('/albums', methods=['POST'])
 def post_albums():
     connection = get_flask_database_connection(app)
@@ -26,6 +26,14 @@ def get_albums():
     connection = get_flask_database_connection(app)
     repository = AlbumRepository(connection)
     return "\n".join(f"{album}" for album in repository.all())
+
+# == /artists routes ==
+
+def get_artists():
+    connection = get_flask_database_connection(app)
+    repository = ArtistRepository(connection)
+    return 200, "\n".join(f"{artist}" for artist in repository.all())
+
 
 
 

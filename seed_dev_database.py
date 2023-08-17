@@ -5,4 +5,4 @@ from lib.database_connection import DatabaseConnection
 
 connection = DatabaseConnection(test_mode=False)
 connection.connect()
-connection.seed("seeds/album_store.sql")
+connection.seed("seeds/artists.sql")

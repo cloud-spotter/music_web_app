@@ -79,3 +79,25 @@ def test_get_albums(db_connection, web_client):
     """
 
 # ^ Not implemented
+
+
+
+
+#####-----  Scenario 1  /artists -----#####
+
+# GET /artists
+# Expected response (200 OK):
+"""
+Pixies, ABBA, Taylor Swift, Nina Simone
+""" 
+'''
+When I call GET /artists
+I get a list of artists back 
+'''
+def test_get_artists(db_connection, web_client):
+    db_connection.seed("seeds/artists.sql")
+    response = web_client.get('/artists')
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == [
+        "Pixies, ABBA, Taylor Swift, Nina Simone"
+    ] 
