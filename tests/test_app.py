@@ -126,6 +126,11 @@ Pixies, ABBA, Taylor Swift, Nina Simone, Wild nothing
 When: I call POST /artists with artist info
 That artist is now in the list in GET /artists
 '''
+'''
+When I call GET /artists
+I get a list of artists back
+With the added artist in the list
+'''
 def test_post_artists(db_connection, web_client):
     db_connection.seed("seeds/artists.sql")
     post_response = web_client.post("/artists", data={
@@ -139,13 +144,29 @@ def test_post_artists(db_connection, web_client):
     assert get_response.status_code == 200
     assert get_response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone, Wild_nothing'
 
-'''
-When I call GET /artists
-I get a list of artists back
-With the added artist in the list
-'''
-def test_get_artists_after_update(db_connection, web_client):
-    db_connection.seed("seeds/artists.sql")
-    response = web_client.get('/artists')
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone, Wild_nothing'
+# Test below was an unnecessary duplication of the above GET request, which needed
+# to be in the same test as the post request to update the artists table:
+# def test_get_artists_after_update(db_connection, web_client):
+#     db_connection.seed("seeds/artists.sql")
+#     response = web_client.get('/artists')
+#     assert response.status_code == 200
+#     assert response.data.decode('utf-8') == 'Pixies, ABBA, Taylor Swift, Nina Simone, Wild_nothing'
+
+
+#####-----  Scenario 3  -----#####
+
+#POST (request sent without parameters):
+# POST /artist
+
+# Expected response (400 Bad Request):
+"""
+You need to submit a title, release_year and artist_id
+"""  
+
+# GET /artist
+# Expected response (200 OK)
+"""
+Pixies, ABBA, Taylor Swift, Nina Simone
+"""
+
+# ^ Not implemented yet
